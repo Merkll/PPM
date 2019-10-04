@@ -16,6 +16,8 @@ questions = [
 class Init:
   def __init__(self):
     self.__package_config = None
+    self.dep_name = "dependencies"
+    self.dev_dep_name = "devDependencies"
   
   @property
   def package_config(self):
@@ -41,13 +43,20 @@ class Init:
       return self.package_config
 
   def add_dependencies(self, name, version, dev=False):
-    requirements = self.read_requirement_txt()
-    depType = "devDependencies" if dev else "dependencies"
+    print(name, version)
+    depType = self.dev_dep_name if dev else self.dep_name
     self.package_config = self.package_config or helpers.read_json()
     self.package_config[depType] = self.package_config.get(depType) or {}
     self.package_config[depType][name] = version 
 
+    self.package_config = self.package_config
+
     return self.package_config
+
+  def get_dependencies(self):
+    self.package_config = self.package_config or helpers.read_json()
+
+    return { self.dep_name: self.package_config.get(self.dep_name, {}), self.dev_dep_name: self.package_config.get(self.dev_dep_name, {}) }
 
   def add_requirements_to_dependencies(self):
     requirements = self.read_requirement_txt()
@@ -56,6 +65,9 @@ class Init:
         name, version = package.split('==')
         self.add_dependencies(name, version)
     return self.package_config
+  
+  def write_package_json(self):
+    return helpers.write_json(self.package_config)
 
   def read_requirement_txt(self):
     return helpers.read_file('requirements.txt').split('\n')

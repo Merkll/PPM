@@ -4,6 +4,8 @@ import subprocess
 import json
 from ppm import config
 
+import pkg_resources
+
 root = getcwd()
 
 def write_json(data):
@@ -22,3 +24,6 @@ def init_venv():
 def read_file(filename):
   with open('{}/{}'.format(root, filename), 'r', encoding='utf-8') as f:
     return f.read()
+
+def run_pip_install(package):
+  return subprocess.Popen(["pip", "install"] + package).wait()

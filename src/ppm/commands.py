@@ -1,1 +1,1 @@
-choices = ["init"]
+choices = ["init", "install"]
